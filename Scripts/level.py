@@ -1,4 +1,3 @@
-import imp
 import pygame
 from settings import *
 from player import Player
