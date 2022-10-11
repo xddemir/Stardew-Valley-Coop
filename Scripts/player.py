@@ -14,8 +14,18 @@ class Player(pg.sprite.Sprite):
         self.direction = pg.math.Vector2()
         self.pos = pg.math.Vector2(self.rect.center)
         self.speed = 200
-        
+    
+    def import_assets(self):
+        self.animations = {'up': [], 'down': [], 'left':[], 'right':[],
+                           'right_idle': [], 'left_idle': [], 'down_idle': [],
+                           'right_hoe': [], 'left_hoe': [], 'down_hoe': [],
+                           'right_axe': [], 'left_axe': [], 'down_axe': [],
+                           'right_water': [], 'left_water': [], 'down_water': []}
 
+        for anim in self.animations.keys:
+            path = '../Assets/graphics/character' + anim
+            self.animations[anim] = import_folder(path)
+    
     def input(self):
         keys = pg.key.get_pressed()
 
@@ -38,9 +48,16 @@ class Player(pg.sprite.Sprite):
         # but self.rect only gets integer values and if you 
         # want to make the movement independent from frame
         # you should another vector then assign it to handle floating point
-        self.pos += self.direction * self.speed * dt
-        self.rect.center = self.pos
+        if self.direction.magnitude() > 0:
+            self.direction = self.direction.normalize()
+
+        # Horizontal movement
+        self.pos.x += self.direction.x * self.speed * dt
+        self.rect.centerx = self.pos.x
         
+        # Vertical movement
+        self.pos.y += self.direction.y * self.speed * dt
+        self.rect.centery = self.pos.y
 
     def update(self, dt):
         self.input()
