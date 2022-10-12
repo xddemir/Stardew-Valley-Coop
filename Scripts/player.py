@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+from support import import_folder
 
 
 class Player(pg.sprite.Sprite):
@@ -14,6 +15,8 @@ class Player(pg.sprite.Sprite):
         self.direction = pg.math.Vector2()
         self.pos = pg.math.Vector2(self.rect.center)
         self.speed = 200
+
+        self.import_assets()
     
     def import_assets(self):
         self.animations = {'up': [], 'down': [], 'left':[], 'right':[],
@@ -22,8 +25,8 @@ class Player(pg.sprite.Sprite):
                            'right_axe': [], 'left_axe': [], 'down_axe': [],
                            'right_water': [], 'left_water': [], 'down_water': []}
 
-        for anim in self.animations.keys:
-            path = '../Assets/graphics/character' + anim
+        for anim in self.animations.keys():
+            path = '../Assets/graphics/character/' + anim
             self.animations[anim] = import_folder(path)
     
     def input(self):
