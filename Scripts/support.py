@@ -11,6 +11,4 @@ def import_folder(path) -> list:
             img = pg.image.load(full_path).convert_alpha()
             surface_list.append(img)
     
-    print(surface_list)
     return surface_list
-    
