@@ -2,7 +2,7 @@ from os import stat
 import pygame as pg
 from settings import *
 from support import import_folder
-
+from timerHandler import Timer
 
 class Player(pg.sprite.Sprite):
     def __init__(self, pos, group):
@@ -12,15 +12,26 @@ class Player(pg.sprite.Sprite):
         self.status = 'down_idle'
         self.frame_index = 0
 
+        # general setup
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(center = pos)
 
         # movement
         self.direction = pg.math.Vector2()
         self.pos = pg.math.Vector2(self.rect.center)
-        self.speled = 200
+        self.speed = 200
 
-    
+        # timers
+        self.timers: dict = {
+            'tool use': Timer(350, self.use_tool)
+        }
+
+        # tools
+        self.selected_tool = 'axe'
+
+    def use_tool(self):
+        print(self.selected_tool)
+
     def import_assets(self):
         self.animations = {'up': [], 'down': [], 'left':[], 'right':[],
                            'right_idle': [], 'left_idle': [],'up_idle': [], 'down_idle': [],
@@ -35,28 +46,43 @@ class Player(pg.sprite.Sprite):
     def input(self):
         keys = pg.key.get_pressed()
 
-        if keys[pg.K_UP]:
-            self.direction.y = -1
-            self.status = 'up'
-        elif keys[pg.K_DOWN]:
-            self.direction.y = 1
-            self.status = 'down'
-        else:
-            self.direction.y = 0
-          
-        if keys[pg.K_LEFT]:
-            self.direction.x = -1
-            self.status = 'left'
-        elif keys[pg.K_RIGHT]:
-            self.direction.x = 1
-            self.status = 'right'
-        else:
-            self.direction.x = 0
-           
+        if not self.timers['tool use'].active:
+            if keys[pg.K_UP]:
+                self.direction.y = -1
+                self.status = 'up'
+            elif keys[pg.K_DOWN]:
+                self.direction.y = 1
+                self.status = 'down'
+            else:
+                self.direction.y = 0
+            
+            if keys[pg.K_LEFT]:
+                self.direction.x = -1
+                self.status = 'left'
+            elif keys[pg.K_RIGHT]:
+                self.direction.x = 1
+                self.status = 'right'
+            else:
+                self.direction.x = 0
+
+            # tool use
+            if keys[pg.K_SPACE]:
+                # timer for the tool use
+                self.timers['tool use'].activate()
+                self.direction = pg.math.Vector2()
+                self.frame_index = 0
+
+    def update_timers(self):
+        for timer in self.timers.values():
+            timer.update()
+
     def get_status(self):
         # idle movement
-       if self.direction.magnitude() == 0:
+        if self.direction.magnitude() == 0:
             self.status = self.status.split('_')[0] + '_idle'
+        # tool use
+        if self.timers['tool use'].active:
+            self.status = self.status.split('_')[0] + '_' + self.selected_tool
 
     def move(self, dt):
         # the usual way is to add direction to the self.rect
@@ -84,6 +110,7 @@ class Player(pg.sprite.Sprite):
     def update(self, dt):
         self.input()
         self.get_status()
+        self.update_timers()
         self.move(dt)
         self.animate(dt)
         
