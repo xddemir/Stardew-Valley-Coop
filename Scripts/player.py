@@ -5,7 +5,7 @@ from support import import_folder
 from timerHandler import Timer
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, pos, group):
+    def __init__(self, pos, group) -> None:
         super().__init__(group)
 
         self.import_assets()
