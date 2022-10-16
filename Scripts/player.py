@@ -24,7 +24,9 @@ class Player(pg.sprite.Sprite):
         # timers
         self.timers: dict = {
             'tool use': Timer(350, self.use_tool),
-            'tool switch': Timer(200)
+            'tool switch': Timer(200),
+            'seed use': Timer(350, self.seed_use),
+            'seed switch': Timer(200)
         }
 
         # tools
@@ -32,15 +34,23 @@ class Player(pg.sprite.Sprite):
         self.tool_index = 0
         self.selected_tool = self.tools[self.tool_index]
 
+        # seeds
+        self.seeds = ['tomato', 'corn']
+        self.seed_index = 0
+        self.selected_seed = self.seeds[self.seed_index]        
+
     def use_tool(self):
         print(self.selected_tool)
+    
+    def use_seed(self):
+        print(self.selected_seed)
 
     def import_assets(self):
         self.animations = {'up': [], 'down': [], 'left':[], 'right':[],
                            'right_idle': [], 'left_idle': [],'up_idle': [], 'down_idle': [],
-                           'right_hoe': [], 'left_hoe': [], 'down_hoe': [],
-                           'right_axe': [], 'left_axe': [], 'down_axe': [],
-                           'right_water': [], 'left_water': [], 'down_water': []}
+                           'right_hoe': [], 'left_hoe': [], 'down_hoe': [], 'up_hoe': [],
+                           'right_axe': [], 'left_axe': [], 'down_axe': [], 'up_axe': [],
+                           'right_water': [], 'left_water': [], 'down_water': [], 'up_water': []}
 
         for anim in self.animations.keys():
             path = '../Assets/graphics/character/' + anim
@@ -83,8 +93,22 @@ class Player(pg.sprite.Sprite):
                 self.tool_index = self.tool_index if self.tool_index < len(self.tools) else 0
 
                 self.selected_tool = self.tools[self.tool_index]
-
             
+            # use seed
+            if keys[pg.K_LCTRL]:
+                self.timers['seed use'].activate()
+                self.direction = pg.math.Vector2()
+                self.frame_index = 0
+
+            # change seed
+            if keys[pg.K_e] and not self.timers['tool seed'].active:
+                self.timers['tool seed'].activate()
+
+                self.seed_index += 1
+                self.seed_index = self.seed_index if self.seed_index < len(self.seeds) else 0
+
+                self.selected_seed = self.selected_seed[self.seed_index]
+
 
     def update_timers(self):
         for timer in self.timers.values():
@@ -97,6 +121,12 @@ class Player(pg.sprite.Sprite):
         # tool use
         if self.timers['tool use'].active:
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
+
+        if self.timers['tool switch'].active:
+            self.status = self.status.split('_')[0] + '_' + self.selected_tool
+
+        if self.timers['seed use'].active:
+            self.status = self.status.split()
 
     def move(self, dt):
         # the usual way is to add direction to the self.rect
