@@ -25,7 +25,7 @@ class Player(pg.sprite.Sprite):
         self.timers: dict = {
             'tool use': Timer(350, self.use_tool),
             'tool switch': Timer(200),
-            'seed use': Timer(350, self.seed_use),
+            'seed use': Timer(350, self.use_seed),
             'seed switch': Timer(200)
         }
 
@@ -40,10 +40,10 @@ class Player(pg.sprite.Sprite):
         self.selected_seed = self.seeds[self.seed_index]        
 
     def use_tool(self):
-        print(self.selected_tool)
+        pass
     
     def use_seed(self):
-        print(self.selected_seed)
+        pass
 
     def import_assets(self):
         self.animations = {'up': [], 'down': [], 'left':[], 'right':[],
@@ -101,13 +101,13 @@ class Player(pg.sprite.Sprite):
                 self.frame_index = 0
 
             # change seed
-            if keys[pg.K_e] and not self.timers['tool seed'].active:
-                self.timers['tool seed'].activate()
+            if keys[pg.K_e] and not self.timers['seed switch'].active:
+                self.timers['seed switch'].activate()
 
                 self.seed_index += 1
                 self.seed_index = self.seed_index if self.seed_index < len(self.seeds) else 0
 
-                self.selected_seed = self.selected_seed[self.seed_index]
+                self.selected_seed = self.seeds[self.seed_index]
 
 
     def update_timers(self):
@@ -126,7 +126,7 @@ class Player(pg.sprite.Sprite):
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
 
         if self.timers['seed use'].active:
-            self.status = self.status.split()
+            self.status = self.status.split("_")[0]
 
     def move(self, dt):
         # the usual way is to add direction to the self.rect
@@ -146,7 +146,7 @@ class Player(pg.sprite.Sprite):
 
     def animate(self, dt):
         self.frame_index += 4 * dt
-        if self.frame_index >= len(self.animations[self.status]):
+        if self.frame_index > len(self.animations[self.status]):
             self.frame_index = 0
         
         self.image = self.animations[self.status][int(self.frame_index)]
