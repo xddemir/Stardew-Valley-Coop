@@ -19,10 +19,19 @@ class Level:
     def setup(self):
         tmx_data = load_pygame('../Assets/data/map.tmx')
 
-        # house
         for layer in ['HouseFloor', 'HouseFurnitureBottom']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
                 Generic((x * 64, y * 64), surf, self.all_sprites, LAYERS['house bottom'])
+
+        for layer in ['HouseWalls', 'HouseFurnitureTop']:
+            for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
+                Generic((x * 64, y * 64), surf, self.all_sprites, LAYERS['main'])
+
+        for layer in ['Fence']:
+            for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
+                Generic((x * 64, y * 64), surf, self.all_sprites, LAYERS['main'])
+
+        
 
         Generic(
             pos=(0, 0),
