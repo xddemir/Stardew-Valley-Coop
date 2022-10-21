@@ -1,4 +1,6 @@
 import pygame
+from sprites import Water
+from support import import_folder
 from overlay import Overlay
 from settings import *
 from player import Player
@@ -31,7 +33,11 @@ class Level:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
                 Generic((x * 64, y * 64), surf, self.all_sprites, LAYERS['main'])
 
-        
+        water_frames = import_folder("../Assets/graphics/water")
+        print(water_frames)    
+        for layer in ['Water']:
+            for x, y , surf in tmx_data.get_layer_by_name(layer).tiles():
+                Water((x * 64, y * 64), surf, water_frames)
 
         Generic(
             pos=(0, 0),
