@@ -34,10 +34,9 @@ class Level:
                 Generic((x * 64, y * 64), surf, self.all_sprites, LAYERS['main'])
 
         water_frames = import_folder("../Assets/graphics/water")
-        print(water_frames)    
         for layer in ['Water']:
             for x, y , surf in tmx_data.get_layer_by_name(layer).tiles():
-                Water((x * 64, y * 64), surf, water_frames)
+                Water((x * 64, y * 64), water_frames, self.all_sprites)
 
         Generic(
             pos=(0, 0),

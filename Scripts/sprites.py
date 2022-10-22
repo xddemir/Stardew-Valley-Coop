@@ -30,3 +30,8 @@ class Water(Generic):
 
     def update(self, dt):
         self.animate(dt)
+
+
+class WildFlower(Generic):
+    def __init__(self, pos, surf, groups) -> None:
+        super().__init__(pos, surf, groups)
