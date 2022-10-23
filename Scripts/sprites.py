@@ -35,3 +35,8 @@ class Water(Generic):
 class WildFlower(Generic):
     def __init__(self, pos, surf, groups) -> None:
         super().__init__(pos, surf, groups)
+
+
+class Tree(Generic):
+    def __init__(self, pos, surf, groups) -> None:
+        super().__init__(pos, surf, groups)
