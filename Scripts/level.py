@@ -77,3 +77,10 @@ class CameraGroup(pygame.sprite.Group):
                     offset_rect = sprite.rect.copy()
                     offset_rect.center -= self.offset
                     self.display_surface.blit(sprite.image, offset_rect)
+        
+    # Edit Camera
+    def draw_square(self):
+        for x in range(SCREEN_WIDTH // 64):
+            for y in range(SCREEN_HEIGHT // 64):
+                rect = pg.Rect(x * 64, y * 64, 64, 64)
+                pg.draw.rect(self.display_surface, (0, 0, 0), rect, 1)
