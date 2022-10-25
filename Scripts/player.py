@@ -178,6 +178,7 @@ class Player(pg.sprite.Sprite):
         self.pos.y += self.direction.y * self.speed * dt
         self.hitbox.centery = round(self.pos.y)
         self.rect.centery = self.hitbox.centery
+        self.collision('vertical')
 
     def animate(self, dt):
         self.frame_index += 4 * dt
