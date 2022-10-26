@@ -159,7 +159,6 @@ class Player(pg.sprite.Sprite):
                         self.rect.centery = self.hitbox.centery
                         self.pos.y = self.hitbox.centery
 
-
     def move(self, dt):
         # the usual way is to add direction to the self.rect
         # but self.rect only gets integer values and if you

@@ -55,7 +55,15 @@ class Level:
             groups=self.all_sprites,
             z=LAYERS['ground'])
 
-        self.player = Player((640, 370), self.all_sprites, self.collision_sprites)
+        # Collision Tiles
+        for x, y, surf in tmx_data.get_layer_by_name("Collision").tiles():
+            Generic((x * TILE_SIZE, y * TILE_SIZE), pygame.Surface((TILE_SIZE, TILE_SIZE)), self.collision_sprites)
+
+        # Player
+        for obj in tmx_data.get_layer_by_name("Player"):
+            if obj.name == "Start":
+                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                
 
     def run(self, dt):
         self.display_surface.fill("black")
