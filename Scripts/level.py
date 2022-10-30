@@ -46,7 +46,8 @@ class Level:
 
         for obj in tmx_data.get_layer_by_name("Trees"):
             Tree((obj.x, obj.y), obj.image, [self.all_sprites, 
-                                             self.collision_sprites])
+                                             self.collision_sprites],
+                                             obj.name)
 
         Generic(
             pos=(0, 0),

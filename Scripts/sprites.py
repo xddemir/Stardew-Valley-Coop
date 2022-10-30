@@ -45,12 +45,14 @@ class Tree(Generic):
     def __init__(self, pos, surf, groups, name) -> None:
         super().__init__(pos, surf, groups)
 
-        self.apples_surf = pg.image.load("/Assets/graphics/fruit/apple.png")
+        self.apples_surf = pg.image.load("../Assets/graphics/fruit/apple.png").convert_alpha()
         self.apple_pos = APPLE_POS[name]
         self.apple_sprites = pg.sprite.Group()
+        self.create_fruit()
             
     def create_fruit(self):
         for pos in self.apple_pos:
+            pos = pos[0] + self.rect.left, pos[1] + self.rect.top 
             if randint(0, 10) < 2:
-                Generic(pos, self.apples_surf)
+                Generic(pos, self.apples_surf, [self.apple_sprites, self.groups()[0]], LAYERS['fruit'])
 
