@@ -6,7 +6,7 @@ from timerHandler import Timer
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, pos, group, collision_group) -> None:
+    def __init__(self, pos, group, collision_group, tree_sprites) -> None:
         super().__init__(group)
 
         self.import_assets()
@@ -45,13 +45,27 @@ class Player(pg.sprite.Sprite):
         self.seed_index = 0
         self.selected_seed = self.seeds[self.seed_index]
 
+        # interaction
+        self.tree_sprites = tree_sprites
+
     def use_tool(self):
-        pass
+        if self.selected_tool == "hoe":
+            pass
+        if self.selected_tool == "axe":
+            for tree in self.tree_sprites.sprites():
+                pass
+        if self.selected_tool == "water":
+            pass
+
+    def get_target_pos(self):
+        self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split("_")[0]]
 
     def use_seed(self):
         pass
 
     def import_assets(self):
+        """ Import player animations"""
+
         self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
                            'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
                            'right_hoe': [], 'left_hoe': [], 'down_hoe': [], 'up_hoe': [],
@@ -63,6 +77,8 @@ class Player(pg.sprite.Sprite):
             self.animations[anim] = import_folder(path)
 
     def input(self):
+        """ Gets proper direction and status via keyboard"""
+
         keys = pg.key.get_pressed()
 
         if not self.timers['tool use'].active:
@@ -118,10 +134,13 @@ class Player(pg.sprite.Sprite):
                 self.selected_seed = self.seeds[self.seed_index]
 
     def update_timers(self):
+        """ Update timers """
         for timer in self.timers.values():
             timer.update()
 
     def get_status(self):
+        """ Gets proper sprite name by directions that player moves """
+
         # idle movement
         if self.direction.magnitude() == 0:
             self.status = self.status.split('_')[0] + '_idle'
@@ -136,6 +155,8 @@ class Player(pg.sprite.Sprite):
             self.status = self.status.split("_")[0]
 
     def collision(self, direction):
+        """ Checks collisions vertically and horizontally"""
+
         for sprite in self.collision_sprites.sprites():
             if hasattr(sprite, 'hitbox'):
                 if sprite.hitbox.colliderect(self.hitbox):
@@ -160,10 +181,10 @@ class Player(pg.sprite.Sprite):
                         self.pos.y = self.hitbox.centery
 
     def move(self, dt):
-        # the usual way is to add direction to the self.rect
-        # but self.rect only gets integer values and if you
-        # want to make the movement independent from frame
-        # you should another vector then assign it to handle floating point
+        """ the usual way is to add direction to the self.rect
+        but self.rect only gets values and if you want to make
+        you should another vector then assign it to handle floating point """
+
         if self.direction.magnitude() > 0:
             self.direction = self.direction.normalize()
 
@@ -180,6 +201,8 @@ class Player(pg.sprite.Sprite):
         self.collision('vertical')
 
     def animate(self, dt):
+        """ animates player sprites by frame index"""
+
         self.frame_index += 4 * dt
         if self.frame_index > len(self.animations[self.status]):
             self.frame_index = 0
@@ -187,8 +210,12 @@ class Player(pg.sprite.Sprite):
         self.image = self.animations[self.status][int(self.frame_index)]
 
     def update(self, dt):
+        """ Updates per frame"""
+
         self.input()
         self.get_status()
         self.update_timers()
+        self.get_target_pos()
+
         self.move(dt)
         self.animate(dt)

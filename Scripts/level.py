@@ -14,6 +14,7 @@ class Level:
 
         self.all_sprites = CameraGroup()
         self.collision_sprites = pygame.sprite.Group()
+        self.tree_sprites = pygame.sprite.Group()
 
         self.setup()
         self.overlay = Overlay(self.player)
@@ -46,7 +47,8 @@ class Level:
 
         for obj in tmx_data.get_layer_by_name("Trees"):
             Tree((obj.x, obj.y), obj.image, [self.all_sprites, 
-                                             self.collision_sprites],
+                                             self.collision_sprites,
+                                             self.tree_sprites],
                                              obj.name)
 
         Generic(
@@ -63,7 +65,7 @@ class Level:
         # Player
         for obj in tmx_data.get_layer_by_name("Player"):
             if obj.name == "Start":
-                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites, self.tree_sprites)
                 
 
     def run(self, dt):
@@ -77,7 +79,7 @@ class Level:
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
-        self.display_surface = pg.display.get_surface()
+        self.display_surface = pygame.display.get_surface()
         self.offset = pygame.math.Vector2()
 
     def custom_draw(self, player: Player):
@@ -91,10 +93,21 @@ class CameraGroup(pygame.sprite.Group):
                     offset_rect = sprite.rect.copy()
                     offset_rect.center -= self.offset
                     self.display_surface.blit(sprite.image, offset_rect)
+                
+                    if sprite == player:
+                        self.__show_player_sprites(player, offset_rect)
         
     # Edit Camera
-    def draw_square(self):
+    def __draw_square(self):
         for x in range(SCREEN_WIDTH // 64):
             for y in range(SCREEN_HEIGHT // 64):
-                rect = pg.Rect(x * 64, y * 64, 64, 64)
-                pg.draw.rect(self.display_surface, (0, 0, 0), rect, 1)
+                rect = pygame.Rect(x * 64, y * 64, 64, 64)
+                pygame.draw.rect(self.display_surface, (0, 0, 0), rect, 1)
+    
+    def __show_player_sprites(self, player, offset_rect):
+        pygame.draw.rect(self.display_surface, 'red', offset_rect, 5)
+        hitbox_rect = player.hitbox.copy()
+        hitbox_rect.center = offset_rect.center
+        pygame.draw.rect(self.display_surface, 'green', hitbox_rect, 5)
+        target_pos = offset_rect.center + PLAYER_TOOL_OFFSET[player.status.split('_')[0]]
+        pygame.draw.circle(self.display_surface, 'blue', target_pos, 5)

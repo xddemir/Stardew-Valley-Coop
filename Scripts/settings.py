@@ -32,3 +32,11 @@ LAYERS = {
     'fruit': 9,
     'rain drops': 10
 }
+
+# tool offsets
+PLAYER_TOOL_OFFSET = {
+    'left': pg.Vector2(-50, 40),
+    'right': pg.Vector2(50, 40),
+    'up': pg.Vector2(0, -10),
+    'down': pg.Vector2(0, 50)
+}

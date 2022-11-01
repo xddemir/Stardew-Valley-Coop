@@ -1,6 +1,10 @@
+from operator import truediv
+from secrets import choice
+from timerHandler import Timer
 import pygame as pg
 from settings import *
-from random import randint
+from random import randint, random
+
 
 class Generic(pg.sprite.Sprite):
     def __init__(self, pos, surf, groups, z=LAYERS['main']) -> None:
@@ -45,6 +49,14 @@ class Tree(Generic):
     def __init__(self, pos, surf, groups, name) -> None:
         super().__init__(pos, surf, groups)
 
+        # tree attributes
+        self.health = randint(3, 6)
+        self.alive = True
+
+        stump_name = 'small' if name == "Small" else "large"
+        self.stump_surf = pg.image.load(f"../Assets/graphics/stumps/{stump_name}.png").convert_alpha()
+        self.invul_timer = Timer(200)
+
         self.apples_surf = pg.image.load("../Assets/graphics/fruit/apple.png").convert_alpha()
         self.apple_pos = APPLE_POS[name]
         self.apple_sprites = pg.sprite.Group()
@@ -55,4 +67,13 @@ class Tree(Generic):
             pos = pos[0] + self.rect.left, pos[1] + self.rect.top 
             if randint(0, 10) < 2:
                 Generic(pos, self.apples_surf, [self.apple_sprites, self.groups()[0]], LAYERS['fruit'])
+
+    def damage(self):
+        # Getting damage
+        self.health -= 1
+
+        # Remove an apple
+        if len(self.apple_sprites.sprites()) > 0:
+            random_apple = choice(self.apple_sprites.sprites())
+            random_apple.kill()
 
