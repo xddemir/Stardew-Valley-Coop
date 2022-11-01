@@ -6,6 +6,8 @@ from timerHandler import Timer
 
 
 class Player(pg.sprite.Sprite):
+    """ Player that interacts with the whole scene via user"""
+
     def __init__(self, pos, group, collision_group, tree_sprites) -> None:
         super().__init__(group)
 
@@ -48,12 +50,22 @@ class Player(pg.sprite.Sprite):
         # interaction
         self.tree_sprites = tree_sprites
 
+        # Inventory
+        self.player_inventory = {
+            "wood": 0,
+            "apple": 0,
+            "corn": 0,
+            "tomato": 0}
+
     def use_tool(self):
+
         if self.selected_tool == "hoe":
             pass
         if self.selected_tool == "axe":
             for tree in self.tree_sprites.sprites():
-                pass
+                if tree.rect.collidepoint(self.target_pos):
+                    tree.damage()
+
         if self.selected_tool == "water":
             pass
 
@@ -135,6 +147,7 @@ class Player(pg.sprite.Sprite):
 
     def update_timers(self):
         """ Update timers """
+
         for timer in self.timers.values():
             timer.update()
 
