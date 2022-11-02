@@ -1,4 +1,4 @@
-from os import stat
+from operator import truediv
 import pygame as pg
 from settings import *
 from support import import_folder
@@ -8,7 +8,7 @@ from timerHandler import Timer
 class Player(pg.sprite.Sprite):
     """ Player that interacts with the whole scene via user"""
 
-    def __init__(self, pos, group, collision_group, tree_sprites) -> None:
+    def __init__(self, pos, group, collision_group, tree_sprites, interaction) -> None:
         super().__init__(group)
 
         self.import_assets()
@@ -49,6 +49,8 @@ class Player(pg.sprite.Sprite):
 
         # interaction
         self.tree_sprites = tree_sprites
+        self.interaction_sprites = interaction
+        self.sleep = False
 
         # Inventory
         self.player_inventory = {
@@ -93,7 +95,7 @@ class Player(pg.sprite.Sprite):
 
         keys = pg.key.get_pressed()
 
-        if not self.timers['tool use'].active:
+        if not self.timers['tool use'].active and not self.sleep:
             if keys[pg.K_UP]:
                 self.direction.y = -1
                 self.status = 'up'
@@ -144,6 +146,19 @@ class Player(pg.sprite.Sprite):
                     self.seeds) else 0
 
                 self.selected_seed = self.seeds[self.seed_index]
+
+            # interactive
+            if keys[pg.K_RETURN]:
+                collided_interaction_sprite = pg.sprite.spritecollide(self, 
+                                                                      self.interaction_sprites, 
+                                                                      False)
+
+                if collided_interaction_sprite:
+                    if collided_interaction_sprite[0].name == "Trader":
+                        pass
+                    else:
+                        self.status = "left_idle"
+                        self.sleep = True
 
     def update_timers(self):
         """ Update timers """
