@@ -69,7 +69,7 @@ class Player(pg.sprite.Sprite):
                     tree.damage()
 
         if self.selected_tool == "water":
-            pass
+            self.soil_layer.water(self.target_pos)
 
     def get_target_pos(self):
         self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split("_")[0]]
@@ -175,10 +175,10 @@ class Player(pg.sprite.Sprite):
         # tool use
         if self.timers['tool use'].active:
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
-
+        # tool switch
         if self.timers['tool switch'].active:
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
-
+        # seed use
         if self.timers['seed use'].active:
             self.status = self.status.split("_")[0]
 
