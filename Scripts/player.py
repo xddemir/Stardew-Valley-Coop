@@ -1,4 +1,3 @@
-from operator import truediv
 import pygame as pg
 from settings import *
 from support import import_folder
@@ -8,7 +7,7 @@ from timerHandler import Timer
 class Player(pg.sprite.Sprite):
     """ Player that interacts with the whole scene via user"""
 
-    def __init__(self, pos, group, collision_group, tree_sprites, interaction) -> None:
+    def __init__(self, pos, group, collision_group, tree_sprites, interaction, soil_layer) -> None:
         super().__init__(group)
 
         self.import_assets()
@@ -26,7 +25,7 @@ class Player(pg.sprite.Sprite):
         self.pos = pg.math.Vector2(self.rect.center)
         self.speed = 200
 
-        # collision
+        # collisionC
         self.collision_sprites = collision_group
 
         # timers
@@ -50,6 +49,7 @@ class Player(pg.sprite.Sprite):
         # interaction
         self.tree_sprites = tree_sprites
         self.interaction_sprites = interaction
+        self.soil_layer = soil_layer
         self.sleep = False
 
         # Inventory
@@ -62,7 +62,8 @@ class Player(pg.sprite.Sprite):
     def use_tool(self):
 
         if self.selected_tool == "hoe":
-            pass
+            self.soil_layer.get_hit(self.target_pos)
+
         if self.selected_tool == "axe":
             for tree in self.tree_sprites.sprites():
                 if tree.rect.collidepoint(self.target_pos):
