@@ -30,6 +30,10 @@ class Level:
         self.player.player_inventory[item] += amount
 
     def reset(self):
+
+        # soil
+        self.soil_layer.remove_water()
+
         # apples on the trees
         for tree in self.tree_sprites.sprites():
             for apple in tree.apple_sprites.sprites():
@@ -132,9 +136,7 @@ class CameraGroup(pygame.sprite.Group):
                     offset_rect.center -= self.offset
                     self.display_surface.blit(sprite.image, offset_rect)
 
-                    if sprite == player:
-                        self.__show_player_sprites(player, offset_rect)
-
+                  
     # Edit Camera
     def __draw_square(self):
         for x in range(SCREEN_WIDTH // 64):
