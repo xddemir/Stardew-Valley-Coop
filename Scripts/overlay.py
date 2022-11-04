@@ -1,8 +1,15 @@
+# Libraries
 import pygame as pg
+
+# Components
 from settings import *
+
+# Constants
 from player import Player
 
 class Overlay:
+    """ Draws UI Elements to the display surface"""
+    
     def __init__(self, player: Player) -> None:
         self.display_surface = pg.display.get_surface()
         self.player = player

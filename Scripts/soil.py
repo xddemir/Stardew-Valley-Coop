@@ -1,11 +1,16 @@
-import pygame
+# Libraries
+import pygame as pg
 import random
-from support import import_folder_dict
-from settings import *
 from pytmx.util_pygame import load_pygame
 
+# Default
+from support import import_folder_dict
 
-class SoilTile(pygame.sprite.Sprite):
+# Constant
+from settings import *
+
+
+class SoilTile(pg.sprite.Sprite):
     def __init__(self, pos, surf, groups) -> None:
         super().__init__(groups)
         self.image = surf
@@ -13,7 +18,7 @@ class SoilTile(pygame.sprite.Sprite):
         self.z = LAYERS['soil']
 
 
-class WaterTile(pygame.sprite.Sprite):
+class WaterTile(pg.sprite.Sprite):
     def __init__(self, pos, surf, groups) -> None:
         super().__init__(groups)
         self.image = surf
@@ -26,10 +31,12 @@ class SoilLayer:
 
         # sprite groups
         self.all_sprites = all_sprites
-        self.soil_sprites = pygame.sprite.Group()
-        self.water_sprites = pygame.sprite.Group()
+        self.soil_sprites = pg.sprite.Group()
+        self.water_sprites = pg.sprite.Group()
 
         self.soil_surf_dict = import_folder_dict("../Assets/graphics/soil")
+
+        self.raining = True
 
         self.create_soil_grid()
         self.create_hit_rects()
@@ -41,7 +48,17 @@ class SoilLayer:
                 if 'W' not in self.grid[y][x]:
                     self.grid[y][x].append('W')
                     WaterTile((soil_sprite.rect.x, soil_sprite.rect.y),
-                              pygame.image.load(f'../Assets/graphics/soil_water/{random.randint(0, 2)}.png'),
+                              pg.image.load(f'../Assets/graphics/soil_water/{random.randint(0, 2)}.png'),
+                              [self.all_sprites, self.water_sprites])
+
+    def water_all(self):
+        for index_row, row in enumerate(self.grid):
+            for index_col, cell in enumerate(row):
+                if 'W' not in cell and 'X' in cell:
+                    cell.append('W')
+                    x, y = index_col * TILE_SIZE, index_row * TILE_SIZE
+                    WaterTile((x, y),
+                              pg.image.load(f'../Assets/graphics/soil_water/{random.randint(0, 2)}.png'),
                               [self.all_sprites, self.water_sprites])
 
     def remove_water(self):
@@ -56,7 +73,7 @@ class SoilLayer:
                     cell.remove('W')
 
     def create_soil_grid(self):
-        ground = pygame.image.load('../Assets/graphics/world/ground.png')
+        ground = pg.image.load('../Assets/graphics/world/ground.png')
         h_tiles, v_tiles = ground.get_width() // TILE_SIZE, ground.get_height() // TILE_SIZE
 
         self.grid = [[[] for col in range(h_tiles)] for row in range(v_tiles)]
@@ -70,7 +87,7 @@ class SoilLayer:
             for index_col, cell in enumerate(row):
                 if 'F' in cell:
                     x, y = index_row * TILE_SIZE, index_col * TILE_SIZE
-                    rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
+                    rect = pg.Rect(x, y, TILE_SIZE, TILE_SIZE)
                     self.hit_rects.append(rect)
     
     def get_hit(self, point):
@@ -80,6 +97,9 @@ class SoilLayer:
                 if 'F' in self.grid[y][x]:
                     self.grid[y][x].append('X')
                     self.create_soil_tiles()
+                    if self.raining:
+                        self.water_all()
+                    
     
     def create_soil_tiles(self):
         self.soil_sprites.empty()

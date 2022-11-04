@@ -5,7 +5,7 @@ from timerHandler import Timer
 
 
 class Player(pg.sprite.Sprite):
-    """ Player that interacts with the whole scene via user"""
+    """ Player that interacts with the whole scene via user """
 
     def __init__(self, pos, group, collision_group, tree_sprites, interaction, soil_layer) -> None:
         super().__init__(group)

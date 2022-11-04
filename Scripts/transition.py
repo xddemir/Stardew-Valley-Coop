@@ -1,12 +1,16 @@
-import pygame
+# Libraries
+import pygame as pg
+
+# Constants
 from settings import *
 
 
 class Transition:
+    """ Transation scene when the day gets restarted """
+    
     def __init__(self, reset, player) -> None:
-
         # setup
-        self.display_surface = pygame.display.get_surface()
+        self.display_surface = pg.display.get_surface()
         self.reset = reset
         self.player = player
 
@@ -29,4 +33,4 @@ class Transition:
             self.player.sleep = False
 
         self.image.fill((self.color, self.color, self.color))
-        self.display_surface.blit(self.image, (0, 0), special_flags= pygame.BLEND_RGBA_MULT)
+        self.display_surface.blit(self.image, (0, 0), special_flags= pg.BLEND_RGBA_MULT)

@@ -1,6 +1,9 @@
+# Libraries
 import pygame as pg
 
 class Timer:
+    """ Time handler for frame of sprites """
+
     def __init__(self, duration, func = None):
         self.duration = duration
         self.func = func

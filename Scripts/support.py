@@ -1,10 +1,12 @@
+# Libraries
 import pygame as pg
 from os import walk
 
 
 def import_folder(path) -> list:
-    surface_list = []
+    """ Helper function to retrieve images in list format """
 
+    surface_list = []
     for _, __, names in walk(path):
         for name in names:
             full_path = path + "/" + name
@@ -15,8 +17,9 @@ def import_folder(path) -> list:
 
 
 def import_folder_dict(path) -> dict:
-    surface_dict: dict = {}
+    """ Helper function to retrieve images in hash-set """
 
+    surface_dict: dict = {}
     for _, __, names in walk(path):
         for name in names:
             full_path = path + "/" + name
