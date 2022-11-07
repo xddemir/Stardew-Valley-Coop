@@ -40,3 +40,9 @@ PLAYER_TOOL_OFFSET = {
     'up': pg.Vector2(0, -10),
     'down': pg.Vector2(0, 50)
 }
+
+# grow speeds
+GROW_SPEEDS = {
+    'corn': 1,
+    'tomato': 0.7
+}

@@ -47,7 +47,8 @@ class Level:
         self.soil_layer.remove_water()
 
         # is rainy
-        self.soil_layer = self.raining
+        self.raining = True if randint(0, 100) > 25 else False
+        self.soil_layer.raining = self.raining
         if self.raining:
             self.soil_layer.water_all()
 

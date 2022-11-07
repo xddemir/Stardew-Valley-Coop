@@ -4,7 +4,7 @@ import random
 from pytmx.util_pygame import load_pygame
 
 # Default
-from support import import_folder_dict
+from support import import_folder_dict, import_folder
 
 # Constant
 from settings import *
@@ -26,13 +26,31 @@ class WaterTile(pg.sprite.Sprite):
         self.z = LAYERS["soil water"]
 
 
-class SoilLayer:
-    def __init__(self, all_sprites):
+class Plant(pg.sprite.Sprite):
+    def __init__(self, plant_type, groups, soil) -> None:
+        super().__init__(groups)
+        self.plant_type = plant_type
+        self.soil = soil
+        self.frames = import_folder(f'../Assets/graphics/fruit/{plant_type}')
+        self.age = 0
+        self.max_age = len(self.frames) - 1
+        self.grow_speed = GROW_SPEEDS[plant_type]
+        self.image = self.frames[self.age]
 
+        self.y_offset = -16 if plant_type == 'corn' else -8
+        self.rect = self.image.get_rect(midbottom = soil.rect.midbottom + pg.math.Vector2(0, self.y_offset))
+        self.z = LAYERS['ground plant']
+
+    def grow(self):
+        pass
+
+class SoilLayer:
+    def __init__(self, all_sprites) -> None:
         # sprite groups
         self.all_sprites = all_sprites
         self.soil_sprites = pg.sprite.Group()
         self.water_sprites = pg.sprite.Group()
+        self.plant_sprites = pg.sprite.Group()
 
         self.soil_surf_dict = import_folder_dict("../Assets/graphics/soil")
 
@@ -40,6 +58,15 @@ class SoilLayer:
 
         self.create_soil_grid()
         self.create_hit_rects()
+
+    def plant_seed(self, target_pos, selected_seed):
+        for soil_sprite in self.soil_sprites.sprites():
+            if soil_sprite.rect.collidepoint(target_pos):
+                x, y = soil_sprite.rect.x // TILE_SIZE, soil_sprite.rect.y // TILE_SIZE
+                if 'W' not in self.grid[y][x] or 'P' not in self.grid[y][x]:
+                    self.grid[y][x].append('P')
+                    Plant(selected_seed, [self.all_sprites, self.plant_sprites], soil_sprite)
+
 
     def water(self, target_pos):
         for soil_sprite in self.soil_sprites.sprites():
@@ -62,7 +89,6 @@ class SoilLayer:
                               [self.all_sprites, self.water_sprites])
 
     def remove_water(self):
-        
         # destroy all water sprites
         for sprite in self.water_sprites.sprites():
             sprite.kill()
@@ -99,7 +125,9 @@ class SoilLayer:
                     self.create_soil_tiles()
                     if self.raining:
                         self.water_all()
-                    
+
+    def is_watered(self, pos):
+        pass
     
     def create_soil_tiles(self):
         self.soil_sprites.empty()
