@@ -46,3 +46,17 @@ GROW_SPEEDS = {
     'corn': 1,
     'tomato': 0.7
 }
+
+# sell prices
+SELL_PRICES = {
+    'wood': 4,
+    'apple': 2,
+    'corn': 10,
+    'tomato': 20
+}
+
+# purchase prices
+PURCHASE_PRICES = {
+    'corn': 4,
+    'tomato': 5
+}

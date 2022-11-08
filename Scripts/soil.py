@@ -27,7 +27,7 @@ class WaterTile(pg.sprite.Sprite):
 
 
 class Plant(pg.sprite.Sprite):
-    def __init__(self, plant_type, groups, soil) -> None:
+    def __init__(self, plant_type, groups, soil, is_watered) -> None:
         super().__init__(groups)
         self.plant_type = plant_type
         self.soil = soil
@@ -37,17 +37,30 @@ class Plant(pg.sprite.Sprite):
         self.grow_speed = GROW_SPEEDS[plant_type]
         self.image = self.frames[self.age]
 
+        self.is_watered =  is_watered
+        self.is_harvestable = False
+
         self.y_offset = -16 if plant_type == 'corn' else -8
         self.rect = self.image.get_rect(midbottom = soil.rect.midbottom + pg.math.Vector2(0, self.y_offset))
         self.z = LAYERS['ground plant']
 
     def grow(self):
-        pass
+        
+        if int(self.age) > 0:
+            self.hitbox = self.rect.copy().inflate(-26, -self.rect.height * 0.4)
+
+        if self.is_watered(self.rect.center):
+            self.z = LAYERS['main'] if int(self.age) > 0 else LAYERS['ground plant']
+            self.age = min(self.age + self.grow_speed, self.max_age)
+            self.is_harvestable = self.age == self.max_age
+            self.image = self.frames[int(self.age)]
+            self.rect = self.image.get_rect(midbottom = self.soil.rect.midbottom + pg.math.Vector2(0, self.y_offset))
 
 class SoilLayer:
-    def __init__(self, all_sprites) -> None:
+    def __init__(self, all_sprites, collision_sprites) -> None:
         # sprite groups
         self.all_sprites = all_sprites
+        self.collision_sprites = collision_sprites
         self.soil_sprites = pg.sprite.Group()
         self.water_sprites = pg.sprite.Group()
         self.plant_sprites = pg.sprite.Group()
@@ -65,7 +78,7 @@ class SoilLayer:
                 x, y = soil_sprite.rect.x // TILE_SIZE, soil_sprite.rect.y // TILE_SIZE
                 if 'W' not in self.grid[y][x] or 'P' not in self.grid[y][x]:
                     self.grid[y][x].append('P')
-                    Plant(selected_seed, [self.all_sprites, self.plant_sprites], soil_sprite)
+                    Plant(selected_seed, [self.all_sprites, self.plant_sprites, self.collision_sprites], soil_sprite, self.is_watered)
 
 
     def water(self, target_pos):
@@ -127,7 +140,13 @@ class SoilLayer:
                         self.water_all()
 
     def is_watered(self, pos):
-        pass
+        x, y = pos[0] // TILE_SIZE, pos[1] // TILE_SIZE
+        cell = self.grid[y][x]
+        return 'W' in cell
+
+    def update_plants(self):
+        for plant in self.plant_sprites.sprites():
+            plant.grow()
     
     def create_soil_tiles(self):
         self.soil_sprites.empty()

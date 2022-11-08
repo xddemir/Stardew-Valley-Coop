@@ -9,6 +9,22 @@ from sprites import Generic
 # Constants
 from settings import * 
 
+class Sky:
+    """ Sky surface that changes the day color """
+    def __init__(self):
+        self.display_surface = pg.display.get_surface()
+        self.full_surface = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.start_color = [255, 255, 255]
+        self.end_color = (38, 101, 189)
+
+    def display(self, dt):
+        for index, value in enumerate(self.end_color):
+            if self.start_color[index] > value:
+                self.start_color[index] -= 2 * dt
+
+        self.full_surface.fill(self.start_color)
+        self.display_surface.blit(self.full_surface, (0, 0), special_flags=pg.BLEND_RGBA_MULT)
+
 
 class Drop(Generic):
     """ Rain-drop sprites created per frame """
