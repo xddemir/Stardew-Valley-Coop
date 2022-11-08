@@ -32,6 +32,7 @@ class Level:
         self.interaction_sprites = pg.sprite.Group()
         self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
 
+        self.soil_layer = SoilLayer(self.all_sprites)
         self.setup()
         self.overlay = Overlay(self.player)
         self.transition = Transition(self.reset, self.player)

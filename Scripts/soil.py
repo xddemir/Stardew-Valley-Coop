@@ -11,6 +11,7 @@ from settings import *
 
 
 class SoilTile(pg.sprite.Sprite):
+
     def __init__(self, pos, surf, groups) -> None:
         super().__init__(groups)
         self.image = surf
@@ -68,7 +69,6 @@ class SoilLayer:
         self.soil_surf_dict = import_folder_dict("../Assets/graphics/soil")
 
         self.raining = True
-
         self.create_soil_grid()
         self.create_hit_rects()
 
