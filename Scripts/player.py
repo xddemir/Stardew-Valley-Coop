@@ -5,9 +5,9 @@ from timerHandler import Timer
 
 
 class Player(pg.sprite.Sprite):
-    """ Player that interacts with the whole scene via user"""
+    """ Player that interacts with the whole scene via user """
 
-    def __init__(self, pos, group, collision_group, tree_sprites, interaction, soil_layer) -> None:
+    def __init__(self, pos, group, collision_group, tree_sprites, interaction, soil_layer, toggle_shop) -> None:
         super().__init__(group)
 
         self.import_assets()
@@ -51,6 +51,7 @@ class Player(pg.sprite.Sprite):
         self.interaction_sprites = interaction
         self.soil_layer = soil_layer
         self.sleep = False
+        self.toggle_shop = toggle_shop
 
         # Inventory
         self.player_inventory = {
@@ -58,6 +59,14 @@ class Player(pg.sprite.Sprite):
             "apple": 0,
             "corn": 0,
             "tomato": 0}
+
+        # seed inventory
+        self.seed_inventory = {
+            "corn": 0,
+            "tomato": 0
+        }
+
+        self.money = 200
 
     def use_tool(self):
 
@@ -70,13 +79,15 @@ class Player(pg.sprite.Sprite):
                     tree.damage()
 
         if self.selected_tool == "water":
-            pass
+            self.soil_layer.water(self.target_pos)
 
     def get_target_pos(self):
         self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split("_")[0]]
 
     def use_seed(self):
-        pass
+        if self.seed_inventory[self.selected_seed] > 0:
+            self.soil_layer.plant_seed(self.target_pos, self.selected_seed)
+            self.seed_inventory[self.selected_seed] -= 1
 
     def import_assets(self):
         """ Import player animations"""
@@ -150,13 +161,13 @@ class Player(pg.sprite.Sprite):
 
             # interactive
             if keys[pg.K_RETURN]:
+                self.toggle_shop()
                 collided_interaction_sprite = pg.sprite.spritecollide(self, 
                                                                       self.interaction_sprites, 
                                                                       False)
-
                 if collided_interaction_sprite:
                     if collided_interaction_sprite[0].name == "Trader":
-                        pass
+                        self.toggle_shop()
                     else:
                         self.status = "left_idle"
                         self.sleep = True
@@ -176,10 +187,10 @@ class Player(pg.sprite.Sprite):
         # tool use
         if self.timers['tool use'].active:
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
-
+        # tool switch
         if self.timers['tool switch'].active:
             self.status = self.status.split('_')[0] + '_' + self.selected_tool
-
+        # seed use
         if self.timers['seed use'].active:
             self.status = self.status.split("_")[0]
 

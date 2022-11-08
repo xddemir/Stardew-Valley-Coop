@@ -1,12 +1,17 @@
-from re import S
-from secrets import choice
-from timerHandler import Timer
+# Libraries
 import pygame as pg
+from random import randint, choice
+
+# Utils
+from timerHandler import Timer
+
+# Constants
 from settings import *
-from random import randint
 
 
 class Generic(pg.sprite.Sprite):
+    """ Sprite concrete class to be extended by sub-classes """
+    
     def __init__(self, pos, surf, groups, z=LAYERS['main']) -> None:
         super().__init__(groups)
         self.image = surf
