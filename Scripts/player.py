@@ -57,13 +57,13 @@ class Player(pg.sprite.Sprite):
         self.player_inventory = {
             "wood": 0,
             "apple": 0,
-            "corn": 0,
+            "corn": 5,
             "tomato": 0}
 
         # seed inventory
         self.seed_inventory = {
-            "corn": 0,
-            "tomato": 0
+            "corn": 5,
+            "tomato": 5
         }
 
         self.money = 200
@@ -82,7 +82,8 @@ class Player(pg.sprite.Sprite):
             self.soil_layer.water(self.target_pos)
 
     def get_target_pos(self):
-        self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split("_")[0]]
+        self.target_pos = self.rect.center + \
+            PLAYER_TOOL_OFFSET[self.status.split("_")[0]]
 
     def use_seed(self):
         if self.seed_inventory[self.selected_seed] > 0:
@@ -162,8 +163,8 @@ class Player(pg.sprite.Sprite):
             # interactive
             if keys[pg.K_RETURN]:
                 self.toggle_shop()
-                collided_interaction_sprite = pg.sprite.spritecollide(self, 
-                                                                      self.interaction_sprites, 
+                collided_interaction_sprite = pg.sprite.spritecollide(self,
+                                                                      self.interaction_sprites,
                                                                       False)
                 if collided_interaction_sprite:
                     if collided_interaction_sprite[0].name == "Trader":
@@ -216,7 +217,7 @@ class Player(pg.sprite.Sprite):
                             self.hitbox.bottom = sprite.hitbox.top
                         if self.direction.y < 0:
                             self.hitbox.top = sprite.hitbox.bottom
-                        
+
                         self.rect.centery = self.hitbox.centery
                         self.pos.y = self.hitbox.centery
 

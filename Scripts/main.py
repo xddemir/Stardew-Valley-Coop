@@ -12,11 +12,16 @@ class Game:
     """ Starts the game and level """
 
     def __init__(self) -> None:
-        pg.init()
+        self.Initialization()
         self.screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pg.time.Clock()
         self.level = Level()
-    
+
+    def Initialize(self):
+        """ Initialize pre-functions before object is instantiated """
+        
+        pg.init()
+
     def run(self):
         while True:
             for event in pg.event.get():

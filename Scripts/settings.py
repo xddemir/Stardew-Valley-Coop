@@ -12,11 +12,10 @@ OVERLAY_POSITIONS = {
     'seed': (70, SCREEN_HEIGHT - 5)
 }
 
-APPLE_POS = {"Small": [(18, 17), (30, 17), (12, 50), 
+APPLE_POS = {"Small": [(18, 17), (30, 17), (12, 50),
                        (30, 45), (20, 30), (30, 10)],
              "Large": [(30, 24), (60, 65), (50, 50),
                        (16, 40), (45, 50), (42, 70)]}
-                       
 
 # layers
 LAYERS = {
@@ -60,3 +59,10 @@ PURCHASE_PRICES = {
     'corn': 4,
     'tomato': 5
 }
+
+settings = {"SCREEN_WIDTH": SCREEN_WIDTH, 
+            "SCREEN_HEIGHT": SCREEN_HEIGHT,
+            "LAYERS": LAYERS,
+            "GROW_SPEEDS": GROW_SPEEDS,
+            "SELL_PRICES": SELL_PRICES,
+            "PURCHASE_PRICES": PURCHASE_PRICES}
