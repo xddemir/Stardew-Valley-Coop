@@ -15,7 +15,7 @@ class Transition:
         self.player = player
 
         # overlay image
-        self.image = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.image = pg.Surface((setting.SCREEN_WIDTH, setting.SCREEN_HEIGHT))
         self.color = 255
         self.speed = -2
 

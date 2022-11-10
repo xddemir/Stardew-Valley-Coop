@@ -12,7 +12,7 @@ from settings import *
 class Generic(pg.sprite.Sprite):
     """ Sprite concrete class to be extended by sub-classes """
     
-    def __init__(self, pos, surf, groups, z=LAYERS['main']) -> None:
+    def __init__(self, pos, surf, groups, z=setting.LAYERS['main']) -> None:
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_rect(topleft=pos)
@@ -31,7 +31,7 @@ class Water(Generic):
         super().__init__(pos=pos,
                          surf=self.frames[self.frame_index],
                          groups=groups,
-                         z=LAYERS['water'])
+                         z=setting.LAYERS['water'])
 
     def animate(self, dt):
         self.frame_index += 4 * dt
@@ -85,7 +85,7 @@ class Tree(Generic):
         self.invul_timer = Timer(200)
 
         self.apples_surf = pg.image.load("../Assets/graphics/fruit/apple.png").convert_alpha()
-        self.apple_pos = APPLE_POS[name]
+        self.apple_pos = setting.APPLE_POS[name]
         self.apple_sprites = pg.sprite.Group()
         self.create_fruit()
             
@@ -93,7 +93,7 @@ class Tree(Generic):
         for pos in self.apple_pos:
             pos = pos[0] + self.rect.left, pos[1] + self.rect.top 
             if randint(0, 10) < 2:
-                Generic(pos, self.apples_surf, [self.apple_sprites, self.groups()[0]], LAYERS['fruit'])
+                Generic(pos, self.apples_surf, [self.apple_sprites, self.groups()[0]], setting.LAYERS['fruit'])
 
     def damage(self):
         # Getting damage
@@ -105,7 +105,7 @@ class Tree(Generic):
             Particle(random_apple.rect.topleft,
                      random_apple.image,
                      self.groups()[0],
-                     LAYERS['fruit'])
+                     setting.LAYERS['fruit'])
             
             # will get back in the later implementations
             self.player_add("apple", 1)
@@ -118,7 +118,7 @@ class Tree(Generic):
         Particle(self.rect.topleft,
                  self.image,
                  self.groups()[0],
-                 LAYERS['main'])
+                 setting.LAYERS['main'])
 
         self.image = self.stump_surf
         self.rect = self.image.get_rect(midbottom = self.rect.midbottom)
@@ -134,7 +134,6 @@ class Interaction(Generic):
     def __init__(self, pos, size, groups, name):
         surf = pg.Surface(size)
         super().__init__(pos, surf, groups)
-        
         self.name = name
 
         

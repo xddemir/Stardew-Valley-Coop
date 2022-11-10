@@ -32,7 +32,7 @@ class Level:
         self.interaction_sprites = pg.sprite.Group()
         self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
 
-        self.soil_layer = SoilLayer(self.all_sprites)
+        self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
         self.setup()
         self.overlay = Overlay(self.player)
         self.transition = Transition(self.reset, self.player)
@@ -82,8 +82,8 @@ class Level:
                 if plant.is_harvestable and plant.rect.colliderect(self.player.hitbox):
                     self.player_add(plant.plant_type)
                     plant.kill()
-                    Particle(plant.rect.topleft, plant.image, self.all_sprites, z= LAYERS['main'])
-                    self.soil_layer.grid[plant.rect.centery // TILE_SIZE][plant.rect.centerx // TILE_SIZE].remove('P')
+                    Particle(plant.rect.topleft, plant.image, self.all_sprites, z= setting.LAYERS['main'])
+                    self.soil_layer.grid[plant.rect.centery // setting.TILE_SIZE][plant.rect.centerx // setting.TILE_SIZE].remove('P')
 
     def toggle_shop(self):
         """ Activates and deactivates shop menu"""
@@ -98,18 +98,18 @@ class Level:
         for layer in ['HouseFloor', 'HouseFurnitureBottom']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
                 Generic((x * 64, y * 64), surf,
-                        self.all_sprites, LAYERS['house bottom'])
+                        self.all_sprites, setting.LAYERS['house bottom'])
 
         for layer in ['HouseWalls', 'HouseFurnitureTop']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
                 Generic((x * 64, y * 64), surf,
-                        self.all_sprites, LAYERS['main'])
+                        self.all_sprites, setting.LAYERS['main'])
 
         for layer in ['Fence']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
                 Generic((x * 64, y * 64), surf, [self.all_sprites,
                                                  self.collision_sprites],
-                        LAYERS['main'])
+                        setting.LAYERS['main'])
 
         water_frames = import_folder("../Assets/graphics/water")
         for layer in ['Water']:
@@ -133,12 +133,12 @@ class Level:
             surf=pg.image.load(
                 '../Assets/graphics/world/ground.png').convert_alpha(),
             groups=self.all_sprites,
-            z=LAYERS['ground'])
+            z=setting.LAYERS['ground'])
 
         # Collision Tiles
         for x, y, surf in tmx_data.get_layer_by_name("Collision").tiles():
-            Generic((x * TILE_SIZE, y * TILE_SIZE),
-                    pg.Surface((TILE_SIZE, TILE_SIZE)),
+            Generic((x * setting.TILE_SIZE, y * setting.TILE_SIZE),
+                    pg.Surface((setting.TILE_SIZE, setting.TILE_SIZE)),
                     self.collision_sprites)
 
         # Player
@@ -197,10 +197,10 @@ class CameraGroup(pg.sprite.Group):
     def custom_draw(self, player: Player):
         """ Handles the overlay collision and draws all scene according to the player's movement """
 
-        self.offset.x = player.rect.centerx - SCREEN_WIDTH / 2
-        self.offset.y = player.rect.centery - SCREEN_HEIGHT / 2
+        self.offset.x = player.rect.centerx - setting.SCREEN_WIDTH / 2
+        self.offset.y = player.rect.centery - setting.SCREEN_HEIGHT / 2
 
-        for layer in LAYERS.values():
+        for layer in setting.LAYERS.values():
             # important overlay sorting
             for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
                 if layer == sprite.z:
@@ -210,8 +210,8 @@ class CameraGroup(pg.sprite.Group):
 
     # Edit Camera
     def __draw_square(self):
-        for x in range(SCREEN_WIDTH // 64):
-            for y in range(SCREEN_HEIGHT // 64):
+        for x in range(setting.SCREEN_WIDTH // 64):
+            for y in range(setting.SCREEN_HEIGHT // 64):
                 rect = pg.Rect(x * 64, y * 64, 64, 64)
                 pg.draw.rect(self.display_surface, (0, 0, 0), rect, 1)
 
@@ -221,5 +221,5 @@ class CameraGroup(pg.sprite.Group):
         hitbox_rect.center = offset_rect.center
         pg.draw.rect(self.display_surface, 'green', hitbox_rect, 5)
         target_pos = offset_rect.center + \
-            PLAYER_TOOL_OFFSET[player.status.split('_')[0]]
+            setting.PLAYER_TOOL_OFFSET[player.status.split('_')[0]]
         pg.draw.circle(self.display_surface, 'blue', target_pos, 5)

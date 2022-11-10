@@ -13,7 +13,7 @@ class Sky:
     """ Sky surface that changes the day color """
     def __init__(self):
         self.display_surface = pg.display.get_surface()
-        self.full_surface = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.full_surface = pg.Surface((setting.SCREEN_WIDTH, setting.SCREEN_HEIGHT))
         self.start_color = [255, 255, 255]
         self.end_color = (38, 101, 189)
 
@@ -67,7 +67,7 @@ class Rain:
             pos = (randint(0, self.floor_w), randint(0, self.floor_h)),
             moving= False,
             groups= self.all_sprites,
-            z = LAYERS['rain floor'])
+            z = setting.LAYERS['rain floor'])
 
     def create_drops(self):
             Drop(
@@ -75,7 +75,7 @@ class Rain:
                 pos = (randint(0, self.floor_w), randint(0, self.floor_h)),
                 moving= False,
                 groups= self.all_sprites,
-                z = LAYERS['rain floor'])
+                z = setting.LAYERS['rain floor'])
 
     def update(self):
         self.create_drops()

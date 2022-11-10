@@ -17,7 +17,7 @@ class Player(pg.sprite.Sprite):
         # general setup
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(center=pos)
-        self.z = LAYERS['main']
+        self.z = setting.LAYERS['main']
         self.hitbox = self.rect.copy().inflate((-126, -70))
 
         # movement
@@ -83,7 +83,7 @@ class Player(pg.sprite.Sprite):
 
     def get_target_pos(self):
         self.target_pos = self.rect.center + \
-            PLAYER_TOOL_OFFSET[self.status.split("_")[0]]
+            setting.PLAYER_TOOL_OFFSET[self.status.split("_")[0]]
 
     def use_seed(self):
         if self.seed_inventory[self.selected_seed] > 0:

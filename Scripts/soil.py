@@ -16,7 +16,7 @@ class SoilTile(pg.sprite.Sprite):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_rect(topleft= pos)
-        self.z = LAYERS['soil']
+        self.z = setting.LAYERS['soil']
 
 
 class WaterTile(pg.sprite.Sprite):
@@ -24,7 +24,7 @@ class WaterTile(pg.sprite.Sprite):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_rect(topleft = pos)
-        self.z = LAYERS["soil water"]
+        self.z = setting.LAYERS["soil water"]
 
 
 class Plant(pg.sprite.Sprite):
@@ -35,7 +35,7 @@ class Plant(pg.sprite.Sprite):
         self.frames = import_folder(f'../Assets/graphics/fruit/{plant_type}')
         self.age = 0
         self.max_age = len(self.frames) - 1
-        self.grow_speed = GROW_SPEEDS[plant_type]
+        self.grow_speed = setting.GROW_SPEEDS[plant_type]
         self.image = self.frames[self.age]
 
         self.is_watered =  is_watered
@@ -43,7 +43,7 @@ class Plant(pg.sprite.Sprite):
 
         self.y_offset = -16 if plant_type == 'corn' else -8
         self.rect = self.image.get_rect(midbottom = soil.rect.midbottom + pg.math.Vector2(0, self.y_offset))
-        self.z = LAYERS['ground plant']
+        self.z = setting.LAYERS['ground plant']
 
     def grow(self):
         
@@ -51,7 +51,7 @@ class Plant(pg.sprite.Sprite):
             self.hitbox = self.rect.copy().inflate(-26, -self.rect.height * 0.4)
 
         if self.is_watered(self.rect.center):
-            self.z = LAYERS['main'] if int(self.age) > 0 else LAYERS['ground plant']
+            self.z = setting.LAYERS['main'] if int(self.age) > 0 else setting.LAYERS['ground plant']
             self.age = min(self.age + self.grow_speed, self.max_age)
             self.is_harvestable = self.age == self.max_age
             self.image = self.frames[int(self.age)]
@@ -75,7 +75,7 @@ class SoilLayer:
     def plant_seed(self, target_pos, selected_seed):
         for soil_sprite in self.soil_sprites.sprites():
             if soil_sprite.rect.collidepoint(target_pos):
-                x, y = soil_sprite.rect.x // TILE_SIZE, soil_sprite.rect.y // TILE_SIZE
+                x, y = soil_sprite.rect.x // setting.TILE_SIZE, soil_sprite.rect.y // setting.TILE_SIZE
                 if 'W' not in self.grid[y][x] or 'P' not in self.grid[y][x]:
                     self.grid[y][x].append('P')
                     Plant(selected_seed, [self.all_sprites, self.plant_sprites, self.collision_sprites], soil_sprite, self.is_watered)
@@ -84,7 +84,7 @@ class SoilLayer:
     def water(self, target_pos):
         for soil_sprite in self.soil_sprites.sprites():
             if soil_sprite.rect.collidepoint(target_pos):
-                x, y = soil_sprite.rect.x // TILE_SIZE, soil_sprite.rect.y // TILE_SIZE
+                x, y = soil_sprite.rect.x // setting.TILE_SIZE, soil_sprite.rect.y // setting.TILE_SIZE
                 if 'W' not in self.grid[y][x]:
                     self.grid[y][x].append('W')
                     WaterTile((soil_sprite.rect.x, soil_sprite.rect.y),
@@ -96,7 +96,7 @@ class SoilLayer:
             for index_col, cell in enumerate(row):
                 if 'W' not in cell and 'X' in cell:
                     cell.append('W')
-                    x, y = index_col * TILE_SIZE, index_row * TILE_SIZE
+                    x, y = index_col * setting.TILE_SIZE, index_row * setting.TILE_SIZE
                     WaterTile((x, y),
                               pg.image.load(f'../Assets/graphics/soil_water/{random.randint(0, 2)}.png'),
                               [self.all_sprites, self.water_sprites])
@@ -113,7 +113,7 @@ class SoilLayer:
 
     def create_soil_grid(self):
         ground = pg.image.load('../Assets/graphics/world/ground.png')
-        h_tiles, v_tiles = ground.get_width() // TILE_SIZE, ground.get_height() // TILE_SIZE
+        h_tiles, v_tiles = ground.get_width() // setting.TILE_SIZE, ground.get_height() // setting.TILE_SIZE
 
         self.grid = [[[] for col in range(h_tiles)] for row in range(v_tiles)]
         for x, y, _ in load_pygame('../Assets/data/map.tmx').get_layer_by_name("Farmable").tiles():
@@ -125,14 +125,14 @@ class SoilLayer:
         for index_row, row in enumerate(self.grid):
             for index_col, cell in enumerate(row):
                 if 'F' in cell:
-                    x, y = index_row * TILE_SIZE, index_col * TILE_SIZE
-                    rect = pg.Rect(x, y, TILE_SIZE, TILE_SIZE)
+                    x, y = index_row * setting.TILE_SIZE, index_col * setting.TILE_SIZE
+                    rect = pg.Rect(x, y, setting.TILE_SIZE, setting.TILE_SIZE)
                     self.hit_rects.append(rect)
     
     def get_hit(self, point):
         for rect in self.hit_rects:
             if rect.collidepoint(point):
-                x, y = rect.x // TILE_SIZE, rect.y // TILE_SIZE
+                x, y = rect.x // setting.TILE_SIZE, rect.y // setting.TILE_SIZE
                 if 'F' in self.grid[y][x]:
                     self.grid[y][x].append('X')
                     self.create_soil_tiles()
@@ -140,7 +140,7 @@ class SoilLayer:
                         self.water_all()
 
     def is_watered(self, pos):
-        x, y = pos[0] // TILE_SIZE, pos[1] // TILE_SIZE
+        x, y = pos[0] // setting.TILE_SIZE, pos[1] // setting.TILE_SIZE
         cell = self.grid[y][x]
         return 'W' in cell
 
@@ -192,6 +192,6 @@ class SoilLayer:
                     if all((l, r, t)) and not b: tile_type = 'lrb'
                     if all((l, r, b)) and not t: tile_type = 'lrt'
 
-                    SoilTile((index_col * TILE_SIZE, index_row * TILE_SIZE),
+                    SoilTile((index_col * setting.TILE_SIZE, index_row * setting.TILE_SIZE),
                              self.soil_surf_dict[tile_type],
                              [self.all_sprites, self.soil_sprites])

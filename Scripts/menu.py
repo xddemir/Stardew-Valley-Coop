@@ -34,7 +34,7 @@ class Menu:
         """ Displays amount of money for each item """
 
         text_surf = self.font.render(str(self.player.money), False, 'Black')
-        text_rect = text_surf.get_rect(midbottom = (SCREEN_WIDTH / 2, SCREEN_HEIGHT - 20))
+        text_rect = text_surf.get_rect(midbottom = (setting.SCREEN_WIDTH / 2, setting.SCREEN_HEIGHT - 20))
         pg.draw.rect(self.display_surface, 'White', text_rect.inflate(10, 10), 0, 6)
         self.display_surface.blit(text_surf, text_rect)
     
@@ -50,8 +50,8 @@ class Menu:
             self.total_height += text_surf.get_height() + (self.padding * 2)
         
         self.total_height += (len(self.text_surfs) - 1) * self.space
-        self.menu_top = SCREEN_HEIGHT / 2 - self.total_height / 2
-        self.main_rect = pg.Rect(SCREEN_WIDTH / 2 - self.width / 2, self.menu_top, self.width, self.total_height)
+        self.menu_top = setting.SCREEN_HEIGHT / 2 - self.total_height / 2
+        self.main_rect = pg.Rect(setting.SCREEN_WIDTH / 2 - self.width / 2, self.menu_top, self.width, self.total_height)
 
         self.buy_text = self.font.render("Buy", False, "Black")
         self.sell_text = self.font.render("Sell", False, "Black")
@@ -80,11 +80,11 @@ class Menu:
                 if self.index <= self.sell_border:
                     if self.player.player_inventory[current_item] > 0:
                         self.player.player_inventory[current_item] -= 1
-                        self.player.money += SELL_PRICES[current_item]
+                        self.player.money += setting.SELL_PRICES[current_item]
                 else:
-                    if self.player.money >= PURCHASE_PRICES[current_item]:
+                    if self.player.money >= setting.PURCHASE_PRICES[current_item]:
                         self.player.player_inventory[current_item] += 1
-                        self.player.money -= PURCHASE_PRICES[current_item]
+                        self.player.money -= setting.PURCHASE_PRICES[current_item]
 
 
     def show_entry(self, text_surf, amount, top, selected):

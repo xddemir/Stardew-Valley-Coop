@@ -1,12 +1,7 @@
 # Libraries
 import pygame as pg
-from os import walk, path
+from os import walk
 from configparser import ConfigParser
-
-
-# Constants
-from settings import *
-
 
 def import_folder(path) -> list:
     """ Helper function to retrieve images in list format """
@@ -34,67 +29,17 @@ def import_folder_dict(path) -> dict:
     return surface_dict
 
 
-def create_config_file():
-
-    config = ConfigParser()
-
-    config["DEFAULT"] = {
-        "SCREEN_WIDTH": SCREEN_WIDTH,
-        "SCREEN_HEIGHT": SCREEN_HEIGHT,
-        "TILE_SIZE": TILE_SIZE
-    }
-
-    config["tool"] = {
-        "x": OVERLAY_POSITIONS["tool"][0],
-        "y": OVERLAY_POSITIONS["tool"][1]
-    }
-
-    config['seed'] = {
-        "x": OVERLAY_POSITIONS["seed"][0],
-        "y": OVERLAY_POSITIONS["seed"][1]
-    }
-
-    config["LAYERS"] = {
-        'water': LAYERS["water"],
-        'ground': LAYERS["ground"],
-        'soil': LAYERS["soil"],
-        'soil water': LAYERS['soil water'],
-        'rain floor': LAYERS["rain floor"],
-        'house bottom': LAYERS["house bottom"],
-        'ground plant': LAYERS["ground plant"],
-        'main': LAYERS["main"],
-        'house top': LAYERS["house top"],
-        'fruit': LAYERS["fruit"],
-        'rain drops': LAYERS["rain drops"]
-    }
-
-    config["GROW_SPEEDS"] = {
-        'corn': GROW_SPEEDS["corn"],
-        'tomato': GROW_SPEEDS["tomato"]
-    }
-
-    config["SELL_PRICES"] = {
-        'wood': SELL_PRICES["wood"],
-        'apple': SELL_PRICES["apple"],
-        'corn': SELL_PRICES["corn"],
-        'tomato': SELL_PRICES["tomato"]
-    }
-
-    config["PURCHASE_PRICES"] = {
-        'corn': PURCHASE_PRICES["corn"],
-        'tomato': PURCHASE_PRICES["tomato"]
-    }
-
-    with open(f"../config.ini", "w") as f:
-        config.write(f)
-
-def read_config_file():
+def convert_config_file(setting: dict):
     config = ConfigParser()
     config.read(f'../config.ini')
-    for key, val in settings.items():
-        if isinstance(val, str):
-            settings[key] = config[key]
-        elif isinstance(val, dict):
-            for sub_key in val.keys():
-                val[sub_key] = int(config[key][sub_key]) if isinstance(config[key][sub_key], int) else float(config[key][sub_key]) 
-                
+    for key, val in setting.items():
+        if isinstance(val, int):
+            setting[key] = int(config["SCREEN_SETTINGS"][key])
+        elif isinstance(val, dict) and key in config.sections():
+            options = config.options(section=key)
+            for option in options:
+                option_val = config.get(section=key, option=option)
+                setting[key][option] = int(option_val) if isinstance(option_val, int) else float(option_val)
+    
+    setting["OVERLAY_POSITIONS"]["tool"] = [int(x) for x in config["tool"].values()]
+    setting["OVERLAY_POSITIONS"]["seed"] = [int(x) for x in config["seed"].values()]
