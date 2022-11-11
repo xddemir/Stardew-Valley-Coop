@@ -100,7 +100,7 @@ class Player(pg.sprite.Sprite):
                            'right_water': [], 'left_water': [], 'down_water': [], 'up_water': []}
 
         for anim in self.animations.keys():
-            path = '../Assets/graphics/character/' + anim
+            path = 'Assets/graphics/character/' + anim
             self.animations[anim] = import_folder(path)
 
     def input(self):

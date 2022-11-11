@@ -1,4 +1,5 @@
 # Libraries
+import os
 import pygame as pg
 
 # Handler
@@ -16,7 +17,7 @@ class Menu:
         self.player = player
         self.toggle_menu = toggle_menu
         self.display_surface = pg.display.get_surface()
-        self.font = pg.font.Font('../Assets/font/LycheeSoda.ttf', 30)
+        self.font = pg.font.Font('Assets/font/LycheeSoda.ttf', 30)
 
         self.width = 400
         self.space = 10

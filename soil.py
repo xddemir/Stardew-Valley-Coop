@@ -32,7 +32,7 @@ class Plant(pg.sprite.Sprite):
         super().__init__(groups)
         self.plant_type = plant_type
         self.soil = soil
-        self.frames = import_folder(f'../Assets/graphics/fruit/{plant_type}')
+        self.frames = import_folder(f'Assets/graphics/fruit/{plant_type}')
         self.age = 0
         self.max_age = len(self.frames) - 1
         self.grow_speed = setting.GROW_SPEEDS[plant_type]
@@ -66,7 +66,7 @@ class SoilLayer:
         self.water_sprites = pg.sprite.Group()
         self.plant_sprites = pg.sprite.Group()
 
-        self.soil_surf_dict = import_folder_dict("../Assets/graphics/soil")
+        self.soil_surf_dict = import_folder_dict("Assets/graphics/soil")
 
         self.raining = True
         self.create_soil_grid()
@@ -88,7 +88,7 @@ class SoilLayer:
                 if 'W' not in self.grid[y][x]:
                     self.grid[y][x].append('W')
                     WaterTile((soil_sprite.rect.x, soil_sprite.rect.y),
-                              pg.image.load(f'../Assets/graphics/soil_water/{random.randint(0, 2)}.png'),
+                              pg.image.load(f'Assets/graphics/soil_water/{random.randint(0, 2)}.png'),
                               [self.all_sprites, self.water_sprites])
 
     def water_all(self):
@@ -98,7 +98,7 @@ class SoilLayer:
                     cell.append('W')
                     x, y = index_col * setting.TILE_SIZE, index_row * setting.TILE_SIZE
                     WaterTile((x, y),
-                              pg.image.load(f'../Assets/graphics/soil_water/{random.randint(0, 2)}.png'),
+                              pg.image.load(f'Assets/graphics/soil_water/{random.randint(0, 2)}.png'),
                               [self.all_sprites, self.water_sprites])
 
     def remove_water(self):
@@ -112,11 +112,11 @@ class SoilLayer:
                     cell.remove('W')
 
     def create_soil_grid(self):
-        ground = pg.image.load('../Assets/graphics/world/ground.png')
+        ground = pg.image.load('Assets/graphics/world/ground.png')
         h_tiles, v_tiles = ground.get_width() // setting.TILE_SIZE, ground.get_height() // setting.TILE_SIZE
 
         self.grid = [[[] for col in range(h_tiles)] for row in range(v_tiles)]
-        for x, y, _ in load_pygame('../Assets/data/map.tmx').get_layer_by_name("Farmable").tiles():
+        for x, y, _ in load_pygame('Assets/data/map.tmx').get_layer_by_name("Farmable").tiles():
             self.grid[y][x].append('F')
 
     def create_hit_rects(self):

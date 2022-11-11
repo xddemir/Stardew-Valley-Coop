@@ -31,7 +31,8 @@ def import_folder_dict(path) -> dict:
 
 def convert_config_file(setting: dict):
     config = ConfigParser()
-    config.read(f'../config.ini')
+    config.read("config.ini")
+
     for key, val in setting.items():
         if isinstance(val, int):
             setting[key] = int(config["SCREEN_SETTINGS"][key])

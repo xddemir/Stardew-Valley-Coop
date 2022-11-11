@@ -57,9 +57,9 @@ class Rain:
 
     def __init__(self, all_sprites):
         self.all_sprites = all_sprites
-        self.rain_drops = import_folder('../Assets/graphics/rain/drops/')
-        self.rain_floor = import_folder('../Assets/graphics/rain/floor/')
-        self.floor_w, self.floor_h = pg.image.load('../Assets/graphics/world/ground.png').get_size()
+        self.rain_drops = import_folder('Assets/graphics/rain/drops/')
+        self.rain_floor = import_folder('Assets/graphics/rain/floor/')
+        self.floor_w, self.floor_h = pg.image.load('Assets/graphics/world/ground.png').get_size()
 
     def create_floor(self):
         Drop(

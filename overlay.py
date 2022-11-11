@@ -1,4 +1,5 @@
 # Libraries
+import os
 import pygame as pg
 
 # Components
@@ -14,7 +15,7 @@ class Overlay:
         self.display_surface = pg.display.get_surface()
         self.player = player
 
-        overlay_path = '../Assets/graphics/overlay/'
+        overlay_path = 'Assets/graphics/overlay/'
         self.tool_surface = {tool: pg.image.load(f'{overlay_path}{tool}.png').convert_alpha() 
                              for tool in player.tools}
 

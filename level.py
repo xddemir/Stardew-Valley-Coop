@@ -93,7 +93,7 @@ class Level:
     def setup(self):
         """ Setups all levels and sprites """
 
-        tmx_data = load_pygame('../Assets/data/map.tmx')
+        tmx_data = load_pygame('Assets/data/map.tmx')
 
         for layer in ['HouseFloor', 'HouseFurnitureBottom']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
@@ -111,7 +111,7 @@ class Level:
                                                  self.collision_sprites],
                         setting.LAYERS['main'])
 
-        water_frames = import_folder("../Assets/graphics/water")
+        water_frames = import_folder("Assets/graphics/water")
         for layer in ['Water']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
                 Water((x * 64, y * 64), water_frames, self.all_sprites)
@@ -131,7 +131,7 @@ class Level:
         Generic(
             pos=(0, 0),
             surf=pg.image.load(
-                '../Assets/graphics/world/ground.png').convert_alpha(),
+                'Assets/graphics/world/ground.png').convert_alpha(),
             groups=self.all_sprites,
             z=setting.LAYERS['ground'])
 

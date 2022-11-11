@@ -21,7 +21,6 @@ class Game:
 
     def Initialize(self):
         """ Initialize pre-functions before object is instantiated """
-        print(setting.SCREEN_WIDTH, setting.SCREEN_HEIGHT)
         pg.init()
 
     def run(self):

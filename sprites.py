@@ -81,10 +81,10 @@ class Tree(Generic):
         self.name = name
 
         stump_name = 'small' if name == "Small" else "large"
-        self.stump_surf = pg.image.load(f"../Assets/graphics/stumps/{stump_name}.png").convert_alpha()
+        self.stump_surf = pg.image.load(f"Assets/graphics/stumps/{stump_name}.png").convert_alpha()
         self.invul_timer = Timer(200)
 
-        self.apples_surf = pg.image.load("../Assets/graphics/fruit/apple.png").convert_alpha()
+        self.apples_surf = pg.image.load("Assets/graphics/fruit/apple.png").convert_alpha()
         self.apple_pos = setting.APPLE_POS[name]
         self.apple_sprites = pg.sprite.Group()
         self.create_fruit()
