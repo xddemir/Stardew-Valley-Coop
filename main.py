@@ -36,7 +36,5 @@ class Game:
             pg.display.update()
 
 if __name__ == "__main__":
-
-
     game = Game()
     game.run()

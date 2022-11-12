@@ -88,16 +88,22 @@ class Tree(Generic):
         self.apple_pos = setting.APPLE_POS[name]
         self.apple_sprites = pg.sprite.Group()
         self.create_fruit()
+
+        # audio mixer
+        self.axe_sound = pg.mixer.Sound("Assets/audio/axe.mp3")
             
     def create_fruit(self):
         for pos in self.apple_pos:
-            pos = pos[0] + self.rect.left, pos[1] + self.rect.top 
+            pos = pos[0] + self.rect.left, pos[1] + self.rect.top
             if randint(0, 10) < 2:
                 Generic(pos, self.apples_surf, [self.apple_sprites, self.groups()[0]], setting.LAYERS['fruit'])
 
     def damage(self):
         # Getting damage
         self.health -= 1
+
+        # axe damage
+        self.axe_sound.play()
 
         # Remove an apple
         if len(self.apple_sprites.sprites()) > 0:

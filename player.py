@@ -68,6 +68,9 @@ class Player(pg.sprite.Sprite):
 
         self.money = 200
 
+        self.water_sound = pg.mixer.Sound("Assets/audio/water.mp3")
+        self.water_sound.set_volume(0.5)
+
     def use_tool(self):
 
         if self.selected_tool == "hoe":
@@ -80,6 +83,7 @@ class Player(pg.sprite.Sprite):
 
         if self.selected_tool == "water":
             self.soil_layer.water(self.target_pos)
+            self.water_sound.play()
 
     def get_target_pos(self):
         self.target_pos = self.rect.center + \
@@ -106,6 +110,11 @@ class Player(pg.sprite.Sprite):
     def input(self):
         """ Gets proper direction and status via keyboard"""
 
+        # interactive
+        collided_interaction_sprite = pg.sprite.spritecollide(self,
+                                                              self.interaction_sprites,
+                                                              False)
+        # key press
         keys = pg.key.get_pressed()
 
         if not self.timers['tool use'].active and not self.sleep:
@@ -160,18 +169,19 @@ class Player(pg.sprite.Sprite):
 
                 self.selected_seed = self.seeds[self.seed_index]
 
-            # interactive
             if keys[pg.K_RETURN]:
-                self.toggle_shop()
-                collided_interaction_sprite = pg.sprite.spritecollide(self,
-                                                                      self.interaction_sprites,
-                                                                      False)
                 if collided_interaction_sprite:
                     if collided_interaction_sprite[0].name == "Trader":
                         self.toggle_shop()
                     else:
                         self.status = "left_idle"
                         self.sleep = True
+
+            # roof area
+            if collided_interaction_sprite:
+                if collided_interaction_sprite[0].name == "Home Roof":
+                    ...
+            
 
     def update_timers(self):
         """ Update timers """

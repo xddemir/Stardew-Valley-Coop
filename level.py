@@ -47,8 +47,19 @@ class Level:
         self.menu = Menu(self.player, self.toggle_shop)
         self.shop_active = False
 
+        # audio
+        self.success_sound = pg.mixer.Sound("Assets/audio/success.wav")
+        self.success_sound.set_volume(0.3)
+
+        self.music = pg.mixer.Sound("Assets/audio/music.mp3")
+        self.music.set_volume(0.2)
+        self.music.play(loops=-1)
+
     def player_add(self, item, amount=1):
         """ Adds specific amount of item to player's inventory """
+        
+        # success sound
+        self.success_sound.play()
 
         self.player.player_inventory[item] += amount
 
@@ -161,6 +172,12 @@ class Level:
             
             if obj.name == "Trader":
                 Interaction((obj.x, obj.y),
+                            (obj.width, obj.height),
+                            self.interaction_sprites,
+                            obj.name)
+
+            if obj.name == "Home Roof":
+                Interaction((obj.x, obj.y)
                             (obj.width, obj.height),
                             self.interaction_sprites,
                             obj.name)
