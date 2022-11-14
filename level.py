@@ -30,6 +30,7 @@ class Level:
         self.collision_sprites = pg.sprite.Group()
         self.tree_sprites = pg.sprite.Group()
         self.interaction_sprites = pg.sprite.Group()
+        self.roof_sprite = pg.sprite.Group()
         self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
 
         self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
@@ -108,19 +109,31 @@ class Level:
 
         for layer in ['HouseFloor', 'HouseFurnitureBottom']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
-                Generic((x * 64, y * 64), surf,
-                        self.all_sprites, setting.LAYERS['house bottom'])
+                Generic((x * 64, y * 64), 
+                        surf,
+                        self.all_sprites, 
+                        setting.LAYERS['house bottom'])
 
         for layer in ['HouseWalls', 'HouseFurnitureTop']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
-                Generic((x * 64, y * 64), surf,
-                        self.all_sprites, setting.LAYERS['main'])
+                Generic((x * 64, y * 64),
+                        surf,
+                        self.all_sprites, 
+                        setting.LAYERS['main'])
+
+        for layer in ['HouseRoof']:
+            for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
+                Generic((x * 64, y * 64), 
+                        surf,
+                        [self.all_sprites, self.roof_sprite],
+                        setting.LAYERS['house roof'])
 
         for layer in ['Fence']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
-                Generic((x * 64, y * 64), surf, [self.all_sprites,
-                                                 self.collision_sprites],
-                        setting.LAYERS['main'])
+                Generic((x * 64, y * 64), 
+                         surf, [self.all_sprites,
+                         self.collision_sprites],
+                         setting.LAYERS['main'])
 
         water_frames = import_folder("Assets/graphics/water")
         for layer in ['Water']:
@@ -162,7 +175,8 @@ class Level:
                     self.tree_sprites,
                     self.interaction_sprites,
                     self.soil_layer,
-                    self.toggle_shop)
+                    self.toggle_shop,
+                    self.roof_sprite)
 
             if obj.name == "Bed":
                 Interaction((obj.x, obj.y),
@@ -175,9 +189,9 @@ class Level:
                             (obj.width, obj.height),
                             self.interaction_sprites,
                             obj.name)
-
-            if obj.name == "Home Roof":
-                Interaction((obj.x, obj.y)
+            
+            if obj.name == "HouseRoof":
+                Interaction((obj.x, obj.y),
                             (obj.width, obj.height),
                             self.interaction_sprites,
                             obj.name)

@@ -7,7 +7,7 @@ from timerHandler import Timer
 class Player(pg.sprite.Sprite):
     """ Player that interacts with the whole scene via user """
 
-    def __init__(self, pos, group, collision_group, tree_sprites, interaction, soil_layer, toggle_shop) -> None:
+    def __init__(self, pos, group, collision_group, tree_sprites, interaction, soil_layer, toggle_shop, roof_sprite) -> None:
         super().__init__(group)
 
         self.import_assets()
@@ -50,7 +50,9 @@ class Player(pg.sprite.Sprite):
         self.tree_sprites = tree_sprites
         self.interaction_sprites = interaction
         self.soil_layer = soil_layer
+        self.roof_sprites = roof_sprite
         self.sleep = False
+        self.roof_open = False
         self.toggle_shop = toggle_shop
 
         # Inventory
@@ -114,6 +116,7 @@ class Player(pg.sprite.Sprite):
         collided_interaction_sprite = pg.sprite.spritecollide(self,
                                                               self.interaction_sprites,
                                                               False)
+
         # key press
         keys = pg.key.get_pressed()
 
@@ -177,11 +180,17 @@ class Player(pg.sprite.Sprite):
                         self.status = "left_idle"
                         self.sleep = True
 
-            # roof area
-            if collided_interaction_sprite:
-                if collided_interaction_sprite[0].name == "Home Roof":
-                    ...
-            
+            if collided_interaction_sprite and collided_interaction_sprite[0].name == "HouseRoof":
+                if self.roof_open is False:
+                    for sprite in self.roof_sprites.sprites():
+                            sprite.image.set_alpha(0)
+                    self.roof_open = True
+            else:
+                if self.roof_open is True:
+                    for sprite in self.roof_sprites.sprites():
+                        sprite.image.set_alpha(255)
+                    self.roof_open = False
+                    
 
     def update_timers(self):
         """ Update timers """
