@@ -18,7 +18,7 @@
 - [About](#about)
 - [Demo / Working](#demo)
 - [Usage](#usage)
-- [TODO](../TODO.md)
+- [TODO](#TODO)
 - [Contact](#Contact)
 - [Contributing](../CONTRIBUTING.md)
 - [Acknowledgments](#acknowledgement)
