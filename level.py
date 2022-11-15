@@ -31,7 +31,7 @@ class Level:
         self.tree_sprites = pg.sprite.Group()
         self.interaction_sprites = pg.sprite.Group()
         self.roof_sprite = pg.sprite.Group()
-        self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
+        self.ground_layer = pg.Surface((1920, 1080)).convert_alpha()
 
         self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
         self.setup()
@@ -55,6 +55,7 @@ class Level:
         self.music = pg.mixer.Sound("Assets/audio/music.mp3")
         self.music.set_volume(0.2)
         self.music.play(loops=-1)
+
 
     def player_add(self, item, amount=1):
         """ Adds specific amount of item to player's inventory """
@@ -102,11 +103,45 @@ class Level:
 
         self.shop_active = not self.shop_active
 
+    def run(self, dt):
+        """ Updates the level per frame """
+
+        self.display_surface.fill("black")
+        # draws ground
+        self.display_surface.blit(self.ground_layer, (0, 0))
+
+        self.all_sprites.custom_draw(self.player)
+
+        if self.shop_active:
+            self.menu.update()
+        else:
+            self.all_sprites.update(dt)
+            self.plant_collision()
+
+        self.overlay.display()
+        if self.raining and not self.shop_active:
+            self.rain.update()
+        self.sky.display(dt)
+
+        if self.player.sleep:
+            self.transition.play()
+
     def setup(self):
         """ Setups all levels and sprites """
 
         tmx_data = load_pygame('Assets/data/map.tmx')
 
+        # draws ground tiles
+        for x, y, surf in tmx_data.get_layer_by_name("Ground").tiles():
+            self.ground_layer.blit(surf,(x * setting.TILE_SIZE, y * setting.TILE_SIZE))
+          
+        for layer in ["Hills", "Outside Decoration", "Forest Grass"]:
+            for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
+                Generic(pos=(x * setting.TILE_SIZE, y * setting.TILE_SIZE),
+                        surf=surf.convert_alpha(),
+                        groups=self.all_sprites,
+                        z=setting.LAYERS["main" if layer.lower() not in setting.LAYERS else layer.lower()])
+            
         for layer in ['HouseFloor', 'HouseFurnitureBottom']:
             for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
                 Generic((x * 64, y * 64), 
@@ -152,18 +187,17 @@ class Level:
                  name=obj.name,
                  player_add=self.player_add)
 
-        Generic(
-            pos=(0, 0),
-            surf=pg.image.load(
-                'Assets/graphics/world/ground.png').convert_alpha(),
-            groups=self.all_sprites,
-            z=setting.LAYERS['ground'])
-
         # Collision Tiles
         for x, y, surf in tmx_data.get_layer_by_name("Collision").tiles():
             Generic((x * setting.TILE_SIZE, y * setting.TILE_SIZE),
                     pg.Surface((setting.TILE_SIZE, setting.TILE_SIZE)),
                     self.collision_sprites)
+
+        for obj in tmx_data.get_layer_by_name("Objects"):
+            Generic((obj.x, obj.y),
+                    obj.image,
+                    [self.all_sprites,
+                     self.collision_sprites])
 
         # Player
         for obj in tmx_data.get_layer_by_name("Player"):
@@ -195,26 +229,6 @@ class Level:
                             (obj.width, obj.height),
                             self.interaction_sprites,
                             obj.name)
-
-    def run(self, dt):
-        """ Updates the level per frame """
-
-        self.display_surface.fill("black")
-        self.all_sprites.custom_draw(self.player)
-
-        if self.shop_active:
-            self.menu.update()
-        else:
-            self.all_sprites.update(dt)
-            self.plant_collision()
-
-        self.overlay.display()
-        if self.raining and not self.shop_active:
-            self.rain.update()
-        self.sky.display(dt)
-
-        if self.player.sleep:
-            self.transition.play()
 
 
 class CameraGroup(pg.sprite.Group):

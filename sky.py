@@ -40,7 +40,7 @@ class Drop(Generic):
         if self.moving: 
             self.pos= pg.math.Vector2(self.rect.topleft)
             self.direction = pg.math.Vector2(-2, 4)
-            self.speed = randint(200, 250)
+            self.speed = randint(200, 500)
 
 
     def update(self, dt):

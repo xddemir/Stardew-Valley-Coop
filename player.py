@@ -183,7 +183,7 @@ class Player(pg.sprite.Sprite):
             if collided_interaction_sprite and collided_interaction_sprite[0].name == "HouseRoof":
                 if self.roof_open is False:
                     for sprite in self.roof_sprites.sprites():
-                            sprite.image.set_alpha(0)
+                            sprite.image.set_alpha(100)
                     self.roof_open = True
             else:
                 if self.roof_open is True:
