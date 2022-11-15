@@ -49,6 +49,7 @@ Game will run directly at 1280x720 resolution.
 - Coop Feature
 - Build Feature
 - Extended Inventory
+- UI Start Screen
 
 
 ## ✍️ Contact <a name = "Contact"></a>
