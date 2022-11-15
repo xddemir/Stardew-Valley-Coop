@@ -25,7 +25,7 @@
 
 ## 🧐 About <a name = "about"></a>
 
-This game is dedicated in the loving memory of someone i used to love.
+This game is dedicated in the loving memory of someone.
 
 ## 🎥 Demo / Working <a name = "demo"></a>
 
