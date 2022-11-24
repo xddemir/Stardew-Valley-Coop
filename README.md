@@ -55,7 +55,7 @@ Game will run directly at 1280x720 resolution.
 ## ✍️ Contact <a name = "Contact"></a>
 
 - [@xddemir](https://github.com/xddemir) - Github
-- [@dogukan.demir@yahoo.com](dogukan.demir@yahoo.com) - Email
+- [@dogukan.demir@yahoo.com](dogukan.demir991@gmail.com) - Email
 
 
 See also the list of [contributors](https://github.com/xddemir/Stardew-Valley-Coop/contributors) who participated in this project.
